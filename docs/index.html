@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context Control Formatter</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 2em; background-color: #f9f9f9; color: #333; }
+        h2 { color: #0052cc; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        h3 { color: #555; }
+        textarea { width: 100%; box-sizing: border-box; height: 250px; margin-bottom: 1em; border: 1px solid #ccc; border-radius: 3px; padding: 8px; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; white-space: pre; }
+        table { border-collapse: collapse; width: 100%; margin-top: 1em; box-shadow: 0 2px 4px rgba(0,0,0,0.1); background-color: #ffffff; }
+        th, td { border: 1px solid #dddddd; padding: 12px; text-align: left; vertical-align: middle; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        button { background-color: #0052cc; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-right: 10px; font-weight: bold; transition: background-color 0.2s; }
+        button:hover { background-color: #0065ff; }
+        #tableContainer { margin-top: 2em; }
+        .sample-image-container { margin-bottom: 2em; padding: 1em; background-color: #ffffff; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .sample-image { max-width: 100%; border-radius: 4px; width: 256px}
+    </style>
+</head>
+<body>
+
+    <h2>Context Control Formatter<br>Text to Confluence/Google Docs Table</h2>
+
+    <div class="sample-image-container">
+        <h3>Sample Input Format</h3>
+        <p>You can copy the text from Pluse and paste it here. The script will format it into a clean table like the one below.</p>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA0QAAAJGCAYAAAB7pkWRAAAKrGlDQ1BJQ0MgUHJvZmlsZQAASImVlwdUk8kWx+f70kNCCyCd0Jv0FkBKCC0U6dVGSAKEEkIggFhQZHEFVhQREVAXdBVEwbUAshZEFAuLogL2DbKoKOtiwYbK+4BD2N133nvn3ZzJ/Z2bO3fuzJk55x8AyMosgSAVlgUgjZ8lDPXxoEbHxFJxLwCMfAjAEsiw2JkCenBwAEBs3v/d3g8CaMbfNpup9e+//1eT43Az2QBAwQjHczLZaQifRMYbtkCYBQCqAYnr5mQJZrgXYQUh0iDC4hlOnON3Mxw/y2j8bE54KANhdQDwJBZLmAgAyQiJU7PZiUgdki/ClnwOj49wLsKuaWnpHITbETZCcgQIz9Snxf+lTuLfasZLarJYiRKe28us4T15mYJU1ur/8zj+t6WliubXMEQGKUnoG4p4aeTMfk9J95cwP35p0DzzOLP5s5wk8o2YZ3YmI3aeM1PDmPPMYXn6S+qkLg2Y5wSetySHl8UMn2duplfYPAvTQyXrJggZ9HlmCRd6EKVESOJJXKakfl5SeNQ8Z/Mil0p6SwnzX8hhSOJCUahkL1y+j8fCut6Sc0jL/MveeUzJ3KykcF/JObAW+ufy6Qs1M6MlvXG4nl4LORGSfEGWh2QtQWqwJJ+b6iOJZ2aHSeZmIZdzYW6w5AyTWX7B8wwYwAbYAj/gABwBckOzuLlZM5tgpAtWC3mJSVlUOvLSuFQmn22+mGptaW0PwMy7nbsWb+/OvkdICb8Q24Ssv8QUgesLscAEAE4i5y3XshAzQHJk8gHoPM4WCbPnYuiZLwwgAhmgAFSAJtAFRsAMWAN74AzcgRfSZxAIBzFgJWCDJJAGhCAHrAUbQREoAdvATlAN9oH9oAEcBcdBGzgDLoDL4Dq4CQbAAyAGo+AlmADvwRQEQTiIDFEgFUgL0odMIWuIBrlCXlAAFArFQHFQIsSHRNBaaBNUApVD1VAd1Aj9DJ2GLkBXoX7oHjQMjUFvoM8wCibBCrAGbABbwDSYDvvD4fAKOBHOgPPgQngrXAXXw0fgVvgCfB0egMXwS3gSBVBSKCWUNsoMRUMxUEGoWFQCSohajypGVaLqUc2oDlQP6jZKjBpHfUJj0RQ0FW2Gdkb7oiPQbHQGej26FF2NbkC3orvRt9HD6An0NwwZo44xxThhmJhoTCImB1OEqcQcxJzCXMIMYEYx77FYrBLWEOuA9cXGYJOxa7Cl2D3YFmwnth87gp3E4XAqOFOcCy4Ix8Jl4Ypwu3FHcOdxt3CjuI94KbwW3hrvjY/F8/EF+Er8Yfw5/C38M/wUQZagT3AiBBE4hNWEMsIBQgfhBmGUMEWUIxoSXYjhxGTiRmIVsZl4ifiQ+FZKSkpHylEqRIontUGqSuqY1BWpYalPJHmSCYlBWk4SkbaSDpE6SfdIb8lksgHZnRxLziJvJTeSL5Ifkz9KU6TNpZnSHOl86RrpVulb0q9kCDL6MnSZlTJ5MpUyJ2RuyIzLEmQNZBmyLNn1sjWyp2WHZCflKHJWckFyaXKlcoflrso9l8fJG8h7yXPkC+X3y1+UH6GgKLoUBoVN2UQ5QLlEGVXAKhgqMBWSFUoUjir0KUwoyivaKkYq5irWKJ5VFCuhlAyUmEqpSmVKx5UGlT4v0lhEX8RdtGVR86Jbiz4oqym7K3OVi5VblAeUP6tQVbxUUlS2q7SpPFJFq5qohqjmqO5VvaQ6rqag5qzGVitWO652Xx1WN1EPVV+jvl+9V31SQ1PDR0OgsVvjosa4ppKmu2ayZoXmOc0xLYqWqxZPq0LrvNYLqiKVTk2lVlG7qRPa6tq+2iLtOu0+7SkdQ50InQKdFp1HukRdmm6CboVul+6EnpZeoN5avSa9+/oEfZp+kv4u/R79DwaGBlEGmw3aDJ4bKhsyDfMMmwwf [truncated]" alt="sample" class="sample-image" />
+    </div>
+
+    <h3>Input Formatter</h3>
+    <p>Paste your text into the area below and click the button to format and copy the table in one step.</p>
+    
+    <textarea id="inputText"></textarea>
+    <br>
+    <button id="btnAction">Format & Copy Table</button>
+
+    <div id="tableContainer"></div>
+
+    <script>
+        document.getElementById('btnAction').addEventListener('click', function() {
+            try {
+                // --- 1. PARSE THE DATA ---
+                const text = document.getElementById('inputText').value.trim();
+                const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                
+                const categories = ["Drugs", "Violence", "Adult", "Alcohol", "Hate Speech", "Offensive Language", "Illegal Downloads", "Fraud"];
+                let parsedData = [];
+                
+                let currentCategory = '';
+                let fraudFalseCodes = [];
+                let inFraudFalse = false;
+
+                // Extract data into an array of objects
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i];
+                    
+                    if (line.replace(/\s+/g, '').toLowerCase().includes('categorylevelcodedescription')) continue;
+
+                    let foundNewCategory = false;
+                    for (let cat of categories) {
+                        if (line.startsWith(cat)) {
+                            currentCategory = cat;
+                            line = line.substring(cat.length).trim();
+                            foundNewCategory = true;
+                            break;
+                        }
+                    }
+
+                    if (currentCategory === 'Fraud') {
+                        if (line.startsWith('True')) {
+                             if (line.includes('IAS_')) { // Squashed format: TrueIAS_...
+                                 let codeMatch = line.match(/(IAS_\d+_PG)/);
+                                 let descMatch = line.match(/(IAS Fraud \/ True)/);
+                                 if (codeMatch && descMatch) {
+                                     parsedData.push({ category: 'Fraud', level: 'True', code: codeMatch[1], desc: descMatch[1] });
+                                 }
+                             } else { // Tabbed/multiline format
+                                 let codeStr = lines[i+1] ? lines[i+1].trim() : '';
+                                 let descStr = lines[i+2] ? lines[i+2].trim() : '';
+                                 parsedData.push({ category: 'Fraud', level: 'True', code: codeStr, desc: descStr });
+                                 i += 2; 
+                             }
+                        } else if (line.startsWith('False')) {
+                            inFraudFalse = true;
+                        } else if (inFraudFalse) {
+                            if (line.includes('IAS Fraud / False')) {
+                                parsedData.push({ category: 'Fraud', level: 'False', code: fraudFalseCodes.join('<br>'), desc: 'IAS Fraud / False' });
+                                inFraudFalse = false;
+                                fraudFalseCodes = [];
+                            } else if (line.includes('IAS_')) {
+                                let match = line.match(/(IAS_\d+_PG)/);
+                                if (match) fraudFalseCodes.push(match[1]);
+                            }
+                        }
+                    } else {
+                        const match = line.match(/^(Very Low|Low|Medium|High|Very High)\s*(IAS_\d+_PG)\s*(.*)$/);
+                        if (match) {
+                            parsedData.push({ category: currentCategory, level: match[1], code: match[2], desc: match[3] });
+                        } else if (!foundNewCategory && parsedData.length > 0) {
+                            // This handles rows that don't have a category name (because it's merged)
+                            const prevCategory = parsedData[parsedData.length - 1].category;
+                            const tabMatch = line.match(/^(Very Low|Low|Medium|High|Very High)\s+(IAS_\d+_PG)\s+(.*)$/);
+                             if(tabMatch){
+                                parsedData.push({ category: prevCategory, level: tabMatch[1], code: tabMatch[2], desc: tabMatch[3] });
+                             }
+                        }
+                    }
+                }
+                
+                if(inFraudFalse){ // Catch lingering fraud false codes at the end
+                    parsedData.push({ category: 'Fraud', level: 'False', code: fraudFalseCodes.join('<br>'), desc: 'IAS Fraud / False' });
+                }
+
+
+                // --- 2. GENERATE HTML WITH ROWSPAN ---
+                const tableStyle = 'border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; border: 1px solid #cccccc;';
+                const thStyle = 'border: 1px solid #dddddd; padding: 12px; background-color: #f2f2f2; font-weight: bold; text-align: left;';
+                const tdStyle = 'border: 1px solid #dddddd; padding: 12px; vertical-align: middle;';
+
+                let html = `<table border="1" style="${tableStyle}"><thead><tr>
+                    <th style="${thStyle}">Category</th>
+                    <th style="${thStyle}">Level</th>
+                    <th style="${thStyle}">Code</th>
+                    <th style="${thStyle}">Description</th>
+                    </tr></thead><tbody>`;
+
+                let index = 0;
+                while (index < parsedData.length) {
+                    let row = parsedData[index];
+                    let currentCat = row.category;
+                    
+                    let rowspan = 1;
+                    for (let j = index + 1; j < parsedData.length; j++) {
+                        if (parsedData[j].category === currentCat) {
+                            rowspan++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    // First row for the category with rowspan
+                    html += `<tr>
+                        <td rowspan="${rowspan}" style="${tdStyle} font-weight: bold; background-color: #fafafa;">${currentCat}</td>
+                        <td style="${tdStyle}">${row.level}</td>
+                        <td style="${tdStyle}">${row.code}</td>
+                        <td style="${tdStyle}">${row.desc}</td>
+                    </tr>`;
+                    
+                    // Subsequent rows for the same category
+                    for (let k = 1; k < rowspan; k++) {
+                        let subRow = parsedData[index + k];
+                        html += `<tr>
+                            <td style="${tdStyle}">${subRow.level}</td>
+                            <td style="${tdStyle}">${subRow.code}</td>
+                            <td style="${tdStyle}">${subRow.desc}</td>
+                        </tr>`;
+                    }
+                    
+                    index += rowspan;
+                }
+                
+                html += '</tbody></table>';
+                document.getElementById('tableContainer').innerHTML = html;
+
+                // --- 3. AUTOMATICALLY COPY TO CLIPBOARD ---
+                const table = document.querySelector('table');
+                if (!table) return;
+
+                const range = document.createRange();
+                range.selectNode(table);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                
+                const successful = document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+
+                // --- 4. NOTIFICATION ---
+                if(successful) {
+                    alert('✅ Success! \n\nThe table has been generated and copied to your clipboard. You can now paste it directly into Google Docs or Confluence.');
+                } else {
+                    alert('⚠️ Table generated, but automatic copy failed. \n\nPlease highlight the table below and press Ctrl+C / Cmd+C manually.');
+                }
+
+            } catch (err) {
+                alert("An error occurred while parsing the text. Please make sure the input format is correct.");
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>
